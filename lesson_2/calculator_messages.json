@@ -1,10 +1,34 @@
 {
-  "welcome" : "Welcome to Calculator",
-  "first" : "What's the first number?",
-  "second" : "What's the second number?",
-  "invalidNumber" : "Number not valid. Please enter a valid number.",
-  "operation" : "What operation would you like to perform\n1) Add 2) Subtract 3) Multiply 4) Divide",
-  "invalidOperation" : "Must choose 1, 2, 3 or 4",
-  "continue" : "Would you like to continue?\n Please enter y or n",
-  "invalidAnswer": "Invalid response. Enter y or n."
+  "language" : "Please select a language",
+  "en" : {
+    "welcome" : "Welcome to Calculator",
+    "first" : "What's the first number?",
+    "second" : "What's the second number?",
+    "invalidNumber" : "Number not valid. Please enter a valid number.",
+    "operation" : "What operation would you like to perform\n1) Add 2) Subtract 3) Multiply 4) Divide",
+    "invalidOperation" : "Must choose 1, 2, 3 or 4",
+    "continue" : "Would you like to continue?\n Please enter y or n",
+    "invalidAnswer": "Invalid response. Enter y or n."
+  },
+  "sp" : {
+    "welcome" : "sp Welcome to Calculator",
+    "first" : "What's the first number?",
+    "second" : "What's the second number?",
+    "invalidNumber" : "Number not valid. Please enter a valid number.",
+    "operation" : "What operation would you like to perform\n1) Add 2) Subtract 3) Multiply 4) Divide",
+    "invalidOperation" : "Must choose 1, 2, 3 or 4",
+    "continue" : "Would you like to continue?\n Please enter y or n",
+    "invalidAnswer": "Invalid response. Enter y or n."
+  },
+  "cn" : {
+    "welcome" : "cn Welcome to Calculator",
+    "first" : "What's the first number?",
+    "second" : "What's the second number?",
+    "invalidNumber" : "Number not valid. Please enter a valid number.",
+    "operation" : "What operation would you like to perform\n1) Add 2) Subtract 3) Multiply 4) Divide",
+    "invalidOperation" : "Must choose 1, 2, 3 or 4",
+    "continue" : "Would you like to continue?\n Please enter y or n",
+    "invalidAnswer": "Invalid response. Enter y or n."
+  }
+
 }
