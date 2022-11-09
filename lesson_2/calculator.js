@@ -13,6 +13,17 @@ function invalidNumber(number) {
   return number.trimStart() === '' || Number.isNaN(Number(number));
 }
 
+function invalidContinueResponse(answer) {
+  if (answer[0] === 'y' || answer[0] === 'n') {
+    return false;
+  } else {
+    return true;
+  }
+}
+
+let run = true;
+
+while (run) {
 prompt('Welcome to Calculator');
 
 prompt("What's the first number?");
@@ -54,6 +65,20 @@ switch (operation) {
     output = Number(number1) / Number(number2);
     break;
 
+  }
+console.log(`The result is: ${output}`);
+
+prompt('Would you like to continue?\n Please enter y or n');
+let answer = readline.question();
+
+
+while (invalidContinueResponse(answer)) {
+  prompt('Invalid response. Enter y or n');
+  answer = readline.question();
 }
 
-console.log(`The result is: ${output}`);
+answer = answer.charAt(0);
+
+answer === 'y' ? run = true : run = false;
+
+}
