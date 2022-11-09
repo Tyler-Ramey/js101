@@ -1,0 +1,33 @@
+{
+  "en" : {
+    "welcome" : "Welcome to Calculator",
+    "first" : "What's the first number?",
+    "second" : "What's the second number?",
+    "invalidNumber" : "Number not valid. Please enter a valid number.",
+    "operation" : "What operation would you like to perform\n1) Add 2) Subtract 3) Multiply 4) Divide",
+    "invalidOperation" : "Must choose 1, 2, 3 or 4",
+    "continue" : "Would you like to continue?\n Please enter y or n",
+    "invalidAnswer": "Invalid response. Enter y or n."
+  },
+  "sp" : {
+    "welcome" : "Bienvenida a la calculadora",
+    "first" : "¿Cuál es el primer número?",
+    "second" : "¿Cuál es el segundo número?",
+    "invalidNumber" : "Número no válido. Por favor ingrese un número valido.",
+    "operation" : "¿Qué operación le gustaría realizar\n1) Sumar 2) Restar 3) Multiplicar 4) Dividir",
+    "invalidOperation" : "Debe elegir 1, 2, 3 o 4",
+    "continue" : "¿Desea continuar?\n Ingrese y o n",
+    "invalidAnswer": "Respuesta invalida. Introduzca y o n."
+  },
+  "cn" : {
+    "welcome" : "欢迎使用计算器",
+    "first" : "第一个数字是多少？",
+    "second" : "第二个数字是多少？",
+    "invalidNumber" : "号码无效。请输入一个有效的数字。",
+    "operation" : "您要执行什么操作\n1) 加 2) 减 3) 乘 4) 除",
+    "invalidOperation" : "必须选择 1、2、3 或 4",
+    "continue" : "要继续吗？\n 请输入 y 或 n",
+    "invalidAnswer": "输入 y 或 n。"
+  }
+
+}
