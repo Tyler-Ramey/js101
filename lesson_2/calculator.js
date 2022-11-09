@@ -3,10 +3,12 @@
 //Ask user for operation
 //Perform the operation
 //Print result
-const messages = require('./calculator_messages.json');
+const LANG = 'cn'
+const MESSAGES = require('./calculator_messages.json');
 const readline = require('readline-sync');
 
-function prompt(msg) {
+function prompt(key) {
+  let msg = message(key);
   console.log(`=> ${msg}`);
 }
 
@@ -15,39 +17,42 @@ function invalidNumber(number) {
 }
 
 function invalidContinueResponse(answer) {
-  if (answer[0] === 'y' || answer[0] === 'n') {
+  if (answer === 'y' || answer === 'n') {
     return false;
   } else {
     return true;
   }
 }
 
+function message(key) {
+  return MESSAGES[LANG][key];
+}
 let run = true;
 
 while (run) {
-prompt(messages.welcome);
+prompt("welcome");
 
-prompt(messages.first);
+prompt("first");
 let number1 = readline.question();
 
 while (invalidNumber(number1)) {
-  prompt(messages.invalidNumber);
+  prompt("invalidNumber");
   number1 = readline.question();
 }
 
-prompt(messages.second);
+prompt("second");
 let number2 = readline.question();
 
 while (invalidNumber(number2)) {
-  prompt(messages.invalidNumber);
+  prompt("invalidNumber");
   number2 = readline.question();
 }
 
-prompt(messages.operation);
+prompt("operation");
 let operation = readline.question();
 
 while (!['1', '2', '3', '4'].includes(operation)) {
-  prompt(messages.invalidOperation);
+  prompt("invalidOperation");
   operation = readline.question();
 }
 
@@ -69,16 +74,14 @@ switch (operation) {
   }
 console.log(`The result is: ${output}`);
 
-prompt(messages.continue);
+prompt("continue");
 let answer = readline.question();
 
 
 while (invalidContinueResponse(answer)) {
-  prompt(messages.invalidAnswer);
+  prompt("invalidAnswer");
   answer = readline.question();
 }
-
-answer = answer.charAt(0);
 
 answer === 'y' ? run = true : run = false;
 
