@@ -1,0 +1,61 @@
+/* Pseudocode */
+/* 
+  Greet user
+  Ask user for loan amount, APR, loan duration in years
+  Convert loan duration in years to months
+  Convert APR to monthly intrest rate (APR / n)
+  - n = duration in months
+  Solve for solution using formula:
+    let monthlyPayment = loanAmount * (monthlyIntRate / (1 - Math.pow((1 + monthlyIntRate), (-durationMonths))));
+  Print result to user in dollars and cents => $123.45 or $123.00
+*/
+
+const readline = require('readline-sync');
+const MESSAGES = require('./loan_messages.json')
+
+let run = true;
+
+function prompt(key) {
+  console.log(`=> ${MESSAGES[key]}`);
+}
+
+function invalidNumber(number) {
+  return number.trimStart() === '' || Number.isNaN(Number(number));
+}
+
+prompt('welcome');
+
+while (run) {
+  
+  prompt('amount');
+  let loanAmount = readline.question();
+  
+  while (invalidNumber(loanAmount)) {
+    prompt('error');
+    loanAmount = readline.question();
+  }
+  
+  prompt('apr');
+  let apr = parseFloat(readline.question());
+  
+  prompt('duration');
+  let durationYears = parseFloat(readline.question());
+  
+  // Conversions
+  let durationMonths = durationYears * 12;
+  let monthlyIntRate = (apr / 100) / 12; //
+  
+  let monthlyPayment = Number(loanAmount) * (monthlyIntRate / (1 - Math.pow((1 + monthlyIntRate), (-durationMonths))));
+  
+  console.log(`Your monthly payment is $${monthlyPayment.toFixed(2)}`);
+  
+  prompt('continue');
+  let userChoice = readline.question();
+  
+  if (userChoice === 'n') {
+    run = false;
+  }
+  
+}
+
+prompt('exit');

@@ -1,0 +1,10 @@
+{
+  "welcome" : "Welcome to Loan Calculator\n======================",
+  "amount" : "Enter Loan Amount: ",
+  "apr" : "Enter APR: ",
+  "duration" : "Enter Loan Duration in Years: ",
+  "continue" : "Would you like to continue?\n Please enter y or n",
+  "error" : "Invalid entry. Please try again.\n=>",
+  "invalidAnswer": "Invalid response. Enter y or n.",
+  "exit" : "Thank you for using this Loan Calculator!"
+}
