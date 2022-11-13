@@ -13,8 +13,6 @@
 const readline = require('readline-sync');
 const MESSAGES = require('./loan_messages.json')
 
-let run = true;
-
 function prompt(key) {
   console.log(`=> ${MESSAGES[key]}`);
 }
@@ -25,7 +23,7 @@ function invalidNumber(number) {
 
 prompt('welcome');
 
-while (run) {
+while (true) {
   
   prompt('amount');
   let loanAmount = readline.question();
@@ -52,10 +50,10 @@ while (run) {
   prompt('continue');
   let userChoice = readline.question();
   
-  if (userChoice === 'n') {
-    run = false;
+  if (userChoice === 'n' || userChoice === 'no') {
+    prompt('exit');
+    break;
   }
   
 }
 
-prompt('exit');
