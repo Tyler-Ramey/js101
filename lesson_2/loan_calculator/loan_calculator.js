@@ -26,6 +26,16 @@ function validateUserInput(userChoice) {
   return VALID_ANSWERS.includes(userChoice);
 }
 
+function convertAPR(apr) {
+  const regex = /0?\.[0-9]*/g;
+  
+  if (regex.test(apr)) {
+    return apr = Number(apr) / 12;
+  } else {
+    return apr = (Number(apr) / 100) / 12; 
+  }
+}
+
 prompt('welcome');
 
 while (true) {
@@ -39,14 +49,14 @@ while (true) {
   }
 
   prompt('apr');
-  let apr = parseFloat(readline.question());
+  let apr = readline.question();
+  let monthlyIntRate = convertAPR(apr);
 
   prompt('duration');
   let durationYears = parseFloat(readline.question());
 
   // Conversions
   let durationMonths = durationYears * 12;
-  let monthlyIntRate = (apr / 100) / 12; //
 
   let monthlyPayment = Number(loanAmount) * (monthlyIntRate / (1 - Math.pow((1 + monthlyIntRate), (-durationMonths))));
 
