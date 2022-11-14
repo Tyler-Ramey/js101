@@ -3,8 +3,8 @@
   "amount" : "Enter Loan Amount: ",
   "apr" : "Enter APR: ",
   "duration" : "Enter Loan Duration in Years: ",
-  "continue" : "Would you like to continue?\n Please enter y or n",
-  "error" : "Invalid entry. Please try again.\n=>",
-  "invalidAnswer": "Invalid response. Enter y or n.",
+  "continue" : "Would you like to continue?\n Please enter yes or no",
+  "error" : "Invalid entry. Please enter a number.",
+  "invalidAnswer": "Invalid response. Please enter yes or no.",
   "exit" : "Thank you for using this Loan Calculator!"
 }
