@@ -1,15 +1,3 @@
-/* Pseudocode */
-/*
-  Greet user
-  Ask user for loan amount, APR, loan duration in years
-  Convert loan duration in years to months
-  Convert APR to monthly intrest rate (APR / n)
-  - n = duration in months
-  Solve for solution using formula:
-    let monthlyPayment = loanAmount * (monthlyIntRate / (1 - Math.pow((1 + monthlyIntRate), (-durationMonths))));
-  Print result to user in dollars and cents => $123.45 or $123.00
-*/
-
 const readline = require('readline-sync');
 const MESSAGES = require('./loan_messages.json');
 
@@ -28,18 +16,17 @@ function validateUserInput(userChoice) {
 
 function convertAPR(apr) {
   const regex = /0?\.[0-9]*/g;
-  
+
   if (regex.test(apr)) {
-    return apr = Number(apr) / 12;
+    apr = Number(apr) / 12;
+    return apr;
   } else {
-    return apr = (Number(apr) / 100) / 12; 
+    apr = (Number(apr) / 100) / 12;
+    return apr;
   }
 }
 
-prompt('welcome');
-
-while (true) {
-
+function getLoanAmount() {
   prompt('amount');
   let loanAmount = readline.question();
 
@@ -48,17 +35,45 @@ while (true) {
     loanAmount = readline.question();
   }
 
+  return Number(loanAmount);
+}
+
+function getAPR() {
   prompt('apr');
   let apr = readline.question();
-  let monthlyIntRate = convertAPR(apr);
+  while (invalidNumber(apr)) {
+    prompt('error');
+    apr = readline.question();
+  }
 
+  return convertAPR(apr);
+}
+
+function getDuration() {
   prompt('duration');
-  let durationYears = parseFloat(readline.question());
+  let duration = readline.question();
+
+  while (invalidNumber(duration)) {
+    prompt('error');
+    duration = readline.question();
+  }
+
+  return Number(duration);
+}
+
+prompt('welcome');
+
+while (true) {
+
+  let loanAmount = getLoanAmount();
+  let monthlyIntRate = getAPR();
+  let durationYears = getDuration();
+
 
   // Conversions
   let durationMonths = durationYears * 12;
 
-  let monthlyPayment = Number(loanAmount) * (monthlyIntRate / (1 - Math.pow((1 + monthlyIntRate), (-durationMonths))));
+  let monthlyPayment = loanAmount * (monthlyIntRate / (1 - Math.pow((1 + monthlyIntRate), (-durationMonths))));
 
   console.log(`Your monthly payment is $${monthlyPayment.toFixed(2)}`);
 
