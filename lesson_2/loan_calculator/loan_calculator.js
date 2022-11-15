@@ -33,13 +33,16 @@ function getAPR() {
     prompt('error');
     apr = readline.question();
   }
-
-  return convertAPR(apr);
+  if (apr > 0) {
+    return convertAPR(apr);
+  } else {
+    return Number(apr);
+  }
 }
 
 function convertAPR(apr) {
   const regex = /0?\.[0-9]*/g; // Looks for number in decimal format with no number in the ones position
-  
+
   if (regex.test(apr)) {
     apr = Number(apr) / 12;    // Converting decimal apr to monthly int
     return apr;
@@ -51,7 +54,7 @@ function convertAPR(apr) {
 
 function getDuration() {
   let durationMonths;
-  
+
   prompt('durationChoice');
   let durationChoice = readline.question();
 
@@ -73,14 +76,25 @@ function getDuration() {
   } else {
     prompt('durationMo');
     durationMonths = readline.question();
-    
+
     while (invalidNumber(durationMonths)) {
       prompt('error');
       durationMonths = readline.question();
     }
   }
 
-  return durationMonths;
+  return Number(durationMonths);
+}
+
+function getMonthlyPayment(amount, intRate, duration) {
+  let payment;
+  if (intRate === 0) {
+    payment = amount / duration;
+  } else {
+    payment = amount * (intRate / (1 - Math.pow((1 + intRate), (-duration))));
+  }
+
+  return payment;
 }
 
 prompt('welcome');
@@ -89,10 +103,9 @@ while (true) {
   let loanAmount = getLoanAmount();
   let monthlyIntRate = getAPR();
   let durationMonths = getDuration();
+  let payment = getMonthlyPayment(loanAmount, monthlyIntRate, durationMonths);
 
-  let monthlyPayment = loanAmount * (monthlyIntRate / (1 - Math.pow((1 + monthlyIntRate), (-durationMonths))));
-
-  console.log(`Your monthly payment is $${monthlyPayment.toFixed(2)}`);
+  console.log(`Your monthly payment is $${payment.toFixed(2)}`);
 
   prompt('continue');
   let userChoice = readline.question();
@@ -112,4 +125,3 @@ while (true) {
   }
 
 }
-
