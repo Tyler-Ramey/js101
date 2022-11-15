@@ -47,11 +47,11 @@ function convertAPR(apr) {
   if (regex.test(apr)) {
     apr = Number(apr) / 12;    // Converting decimal apr to monthly int
   } else {
-    apr = Number(apr) / 100 /12; // Converting whole num. apr to monthly int
-  } 
+    apr = Number(apr) / 100 / 12; // Converting whole num. apr to monthly int
+  }
 
-  return apr
-} 
+  return apr;
+}
 
 function getDuration() {
   let durationMonths;
