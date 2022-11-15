@@ -4,7 +4,7 @@
   "apr" : "Enter APR: ",
   "durationYr" : "Enter Loan Duration in Years: ",
   "durationMo" : "Enter Loan Duration in Months: ",
-  "durationChoice" : "Is your loan in months or years? Please enter 'month' or 'year'.",
+  "durationChoice" : "Is your loan duration in months or years? Please enter 'month' or 'year'.",
   "durationError" : "Invalid response. Please enter 'month' or 'year'",
   "continue" : "Would you like to continue?\n Please enter yes or no",
   "error" : "Invalid entry. Please enter a number.",
