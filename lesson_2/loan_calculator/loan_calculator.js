@@ -33,24 +33,25 @@ function getAPR() {
     prompt('error');
     apr = readline.question();
   }
-  if (apr > 0) {
-    return convertAPR(apr);
+  if (Number(apr) > 0) {
+    apr = convertAPR(apr);
+    return apr;
   } else {
     return Number(apr);
   }
 }
 
 function convertAPR(apr) {
-  const regex = /0?\.[0-9]*/g; // Looks for number in decimal format with no number in the ones position
+  const regex = /^0?\.\d*$/g; // Looks for number in decimal format with no number in the ones position
 
   if (regex.test(apr)) {
     apr = Number(apr) / 12;    // Converting decimal apr to monthly int
-    return apr;
   } else {
-    apr = (Number(apr) / 100) / 12; // Converting whole num. apr to monthly int
-    return apr;
-  }
-}
+    apr = Number(apr) / 100 /12; // Converting whole num. apr to monthly int
+  } 
+
+  return apr
+} 
 
 function getDuration() {
   let durationMonths;
