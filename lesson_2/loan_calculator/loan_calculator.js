@@ -14,18 +14,6 @@ function validateUserInput(userChoice) {
   return VALID_ANSWERS.includes(userChoice);
 }
 
-function convertAPR(apr) {
-  const regex = /0?\.[0-9]*/g;
-
-  if (regex.test(apr)) {
-    apr = Number(apr) / 12;
-    return apr;
-  } else {
-    apr = (Number(apr) / 100) / 12;
-    return apr;
-  }
-}
-
 function getLoanAmount() {
   prompt('amount');
   let loanAmount = readline.question();
@@ -49,29 +37,58 @@ function getAPR() {
   return convertAPR(apr);
 }
 
-function getDuration() {
-  prompt('duration');
-  let duration = readline.question();
+function convertAPR(apr) {
+  const regex = /0?\.[0-9]*/g; // Looks for number in decimal format with no number in the ones position
+  
+  if (regex.test(apr)) {
+    apr = Number(apr) / 12;    // Converting decimal apr to monthly int
+    return apr;
+  } else {
+    apr = (Number(apr) / 100) / 12; // Converting whole num. apr to monthly int
+    return apr;
+  }
+}
 
-  while (invalidNumber(duration)) {
-    prompt('error');
-    duration = readline.question();
+function getDuration() {
+  let durationMonths;
+  
+  prompt('durationChoice');
+  let durationChoice = readline.question();
+
+  while (durationChoice !== 'month' && durationChoice !== 'year') {
+    prompt('durationError');
+    durationChoice = readline.question();
   }
 
-  return Number(duration);
+  if (durationChoice === 'year') {
+    prompt('durationYr');
+    let durationYears = readline.question();
+
+    while (invalidNumber(durationYears)) {
+      prompt('error');
+      durationYears = readline.question();
+    }
+
+    durationMonths = durationYears * 12;
+  } else {
+    prompt('durationMo');
+    durationMonths = readline.question();
+    
+    while (invalidNumber(durationMonths)) {
+      prompt('error');
+      durationMonths = readline.question();
+    }
+  }
+
+  return durationMonths;
 }
 
 prompt('welcome');
 
 while (true) {
-
   let loanAmount = getLoanAmount();
   let monthlyIntRate = getAPR();
-  let durationYears = getDuration();
-
-
-  // Conversions
-  let durationMonths = durationYears * 12;
+  let durationMonths = getDuration();
 
   let monthlyPayment = loanAmount * (monthlyIntRate / (1 - Math.pow((1 + monthlyIntRate), (-durationMonths))));
 
