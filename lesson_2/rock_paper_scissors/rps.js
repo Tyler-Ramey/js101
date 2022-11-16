@@ -1,14 +1,5 @@
 const readline = require('readline-sync');
-<<<<<<< HEAD
-<<<<<<< HEAD
-//const MESSAGES = require('./rps_messages.json');
-const VALID_CHOICES = ['rock', 'paper', 'scissors'];
-=======
 const VALID_CHOICES = ['rock', 'paper', 'scissors', 'lizard', 'spock'];
->>>>>>> test
-=======
-const VALID_CHOICES = ['rock', 'paper', 'scissors', 'lizard', 'spock'];
->>>>>>> test
 const VALID_ANSWER = [ 'n', 'no', 'y', 'yes'];
 
 const prompt = msg => {
@@ -18,17 +9,14 @@ const prompt = msg => {
 function displayWinner(choice, computerChoice) {
   prompt(`You chose ${choice}, computer chose ${computerChoice}`);
 
-  if ((choice === 'rock' && (computerChoice === 'scissors'|| computerChoice === 'lizard')) ||
-      (choice === 'paper' && (computerChoice === 'rock' || computerChoice === 'spock')) ||
-      (choice === 'scissors' && (computerChoice === 'paper' || computerChoice === 'lizard')) ||
-      (choice === 'lizard' && (computerChoice === 'spock' || computerChoice === 'paper')) ||
-      (choice === 'spock' && (computerChoice === 'scissors' || computerChoice === 'rock'))) {
+  if ((choice === 'rock' && computerChoice === 'scissors') ||
+      (choice === 'paper' && computerChoice === 'rock') ||
+      (choice === 'scissors' && computerChoice === 'paper')) {
+
     prompt('You win!');
-  } else if ((choice === 'rock' && (computerChoice === 'paper' || computerChoice === 'spock')) ||
-             (choice === 'paper' && (computerChoice === 'scissors' || computerChoice === 'lizard')) ||
-             (choice === 'scissors' && (computerChoice === 'rock' || computerChoice === 'spock')) ||
-             (choice === 'lizard' && (computerChoice === 'scissors' || computerChoice === 'rock')) ||
-             (choice === 'spock' && (computerChoice === 'lizard' || computerChoice === 'paper'))) {
+  } else if ((choice === 'rock' && computerChoice === 'paper') ||
+             (choice === 'paper' && computerChoice === 'scissors') ||
+             (choice === 'scissors' && computerChoice === 'rock')) {
     prompt('Computer wins!');
   } else {
     prompt("It's a tie!");
@@ -36,9 +24,9 @@ function displayWinner(choice, computerChoice) {
 }
 
 
-
 while (true) {
   console.clear(); // Clears the console on startup and replays
+
   prompt(`Choose one: ${VALID_CHOICES.join(', ')}`);
   let choice = readline.question().toLowerCase();
 
@@ -48,7 +36,7 @@ while (true) {
   }
 
   let randomIndex = Math.floor(Math.random() * VALID_CHOICES.length);
-  let computerChoice = VALID_CHOICES[4];
+  let computerChoice = VALID_CHOICES[randomIndex];
 
   displayWinner(choice, computerChoice);
 
@@ -63,5 +51,7 @@ while (true) {
   if (answer === 'no' || answer === 'n') {
     prompt('Thank you for playing!');
     break;
+  } else {
+    console.clear(); //Clears the console on continue
   }
 }
