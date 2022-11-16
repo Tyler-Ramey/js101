@@ -1,35 +1,37 @@
 const readline = require('readline-sync');
-const VALID_CHOICES = ['rock', 'paper', 'scissors', 'lizard', 'spock'];
+const VALID_CHOICES = ['rock/r', 'paper/p', 'scissors/sc', 'lizard/l', 'spock/sp'];
 const VALID_ANSWER = [ 'n', 'no', 'y', 'yes'];
+const WINNING_COMBOS = {
+  rock:     ['scissors', 'lizard'],
+  paper:    ['rock',     'spock'],
+  scissors: ['paper',    'lizard'],
+  lizard:   ['paper',    'spock'],
+  spock:    ['rock',     'scissors'],
+};
 
 const prompt = msg => {
   console.log(`#>> ${msg}`);
-};
+}
 
-function displayWinner(choice, computerChoice) {
-  prompt(`You chose ${choice}, computer chose ${computerChoice}`);
-
-  if ((choice === 'rock' && (computerChoice === 'scissors'|| computerChoice === 'lizard')) ||
-      (choice === 'paper' && (computerChoice === 'rock' || computerChoice === 'spock')) ||
-      (choice === 'scissors' && (computerChoice === 'paper' || computerChoice === 'lizard')) ||
-      (choice === 'lizard' && (computerChoice === 'spock' || computerChoice === 'paper')) ||
-      (choice === 'spock' && (computerChoice === 'scissors' || computerChoice === 'rock'))) {
+const displayWinner = (choice, computerChoice) => {
+  prompt(`You chose ${choice}. The computer chose ${computerChoice}`);
+  
+  if (playerWins(choice, computerChoice)) {
     prompt('You win!');
-  } else if ((choice === 'rock' && (computerChoice === 'paper' || computerChoice === 'spock')) ||
-             (choice === 'paper' && (computerChoice === 'scissors' || computerChoice === 'lizard')) ||
-             (choice === 'scissors' && (computerChoice === 'rock' || computerChoice === 'spock')) ||
-             (choice === 'lizard' && (computerChoice === 'scissors' || computerChoice === 'rock')) ||
-             (choice === 'spock' && (computerChoice === 'lizard' || computerChoice === 'paper'))) {
-    prompt('Computer wins!');
-  } else {
+  } else if (choice === computerChoice) {
     prompt("It's a tie!");
+  } else {
+    prompt("Computer wins!");
   }
 }
 
-
+const playerWins = (choice, computerChoice) => {
+  return WINNING_COMBOS[choice].includes(computerChoice);
+}
 
 while (true) {
   console.clear(); // Clears the console on startup and replays
+  
   prompt(`Choose one: ${VALID_CHOICES.join(', ')}`);
   let choice = readline.question();
 
