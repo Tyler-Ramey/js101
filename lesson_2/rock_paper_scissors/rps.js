@@ -1,5 +1,5 @@
 const readline = require('readline-sync');
-const MESSAGES = require('./rps_messages.json');
+//const MESSAGES = require('./rps_messages.json');
 const VALID_CHOICES = ['rock', 'paper', 'scissors'];
 const VALID_ANSWER = [ 'n', 'no', 'y', 'yes'];
 
@@ -25,11 +25,11 @@ function displayWinner(choice, computerChoice) {
 
 while (true) {
   prompt(`Choose one: ${VALID_CHOICES.join(', ')}`);
-  let choice = readline.question();
+  let choice = readline.question().toLowerCase();
 
   while (!VALID_CHOICES.includes(choice)) {
     prompt("That is not a valid choice.");
-    choice = readline.question();
+    choice = readline.question().toLowerCase();
   }
 
   let randomIndex = Math.floor(Math.random() * VALID_CHOICES.length);
