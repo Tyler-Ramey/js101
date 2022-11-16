@@ -39,7 +39,7 @@ while (true) {
   }
 
   let randomIndex = Math.floor(Math.random() * VALID_CHOICES.length);
-  let computerChoice = VALID_CHOICES[4];
+  let computerChoice = VALID_CHOICES[randomIndex];
 
   displayWinner(choice, computerChoice);
 
