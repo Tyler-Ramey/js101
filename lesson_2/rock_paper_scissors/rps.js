@@ -1,7 +1,11 @@
 const readline = require('readline-sync');
 <<<<<<< HEAD
+<<<<<<< HEAD
 //const MESSAGES = require('./rps_messages.json');
 const VALID_CHOICES = ['rock', 'paper', 'scissors'];
+=======
+const VALID_CHOICES = ['rock', 'paper', 'scissors', 'lizard', 'spock'];
+>>>>>>> test
 =======
 const VALID_CHOICES = ['rock', 'paper', 'scissors', 'lizard', 'spock'];
 >>>>>>> test
