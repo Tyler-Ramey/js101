@@ -1,5 +1,6 @@
 const readline = require('readline-sync');
-const VALID_CHOICES = ['rock/r', 'paper/p', 'scissors/sc', 'lizard/l', 'spock/sp'];
+const MESSAGES = require('./rps_messages.json');
+const VALID_CHOICES = ['rock', 'paper', 'scissors', 'lizard', 'spock'];
 const VALID_ANSWER = [ 'n', 'no', 'y', 'yes'];
 const WINNING_COMBOS = {
   rock:     ['scissors', 'lizard'],
@@ -9,52 +10,92 @@ const WINNING_COMBOS = {
   spock:    ['rock',     'scissors'],
 };
 
-const prompt = msg => {
-  console.log(`#>> ${msg}`);
-}
+let playerWinCount = 0;
+let computerWinCount = 0;
+let run = true;
 
-const displayWinner = (choice, computerChoice) => {
-  prompt(`You chose ${choice}. The computer chose ${computerChoice}`);
-  
-  if (playerWins(choice, computerChoice)) {
-    prompt('You win!');
-  } else if (choice === computerChoice) {
-    prompt("It's a tie!");
-  } else {
-    prompt("Computer wins!");
-  }
-}
+const prompt = key => {
+  console.log(`#>> ${MESSAGES[key]}`);
+};
 
 const playerWins = (choice, computerChoice) => {
   return WINNING_COMBOS[choice].includes(computerChoice);
-}
+};
 
-while (true) {
-  console.clear(); // Clears the console on startup and replays
-  
-  prompt(`Choose one: ${VALID_CHOICES.join(', ')}`);
-  let choice = readline.question();
-
-  while (!VALID_CHOICES.includes(choice)) {
-    prompt("That is not a valid choice.");
-    choice = readline.question();
+const incrementWinner = winner => {
+  if (winner === 'user') {
+    playerWinCount += 1;
+  } else {
+    computerWinCount += 1;
   }
+};
 
-  let randomIndex = Math.floor(Math.random() * VALID_CHOICES.length);
-  let computerChoice = VALID_CHOICES[randomIndex];
+const displayWinner = (choice, computerChoice) => {
+  console.log(`#>> You chose ${choice}. The computer chose ${computerChoice}`);
 
-  displayWinner(choice, computerChoice);
+  if (playerWins(choice, computerChoice)) {
+    incrementWinner('user');
+    prompt('winRound');
+  } else if (choice === computerChoice) {
+    prompt("tie");
+  } else {
+    incrementWinner('comuter');
+    prompt("loseRound");
+  }
+};
 
-  prompt('Would you like to play again? (y/n)');
+const getPlayAgain = () => {
+  prompt('continue');
   let answer = readline.question().toLowerCase();
 
   while (!VALID_ANSWER.includes(answer)) {
-    prompt('Please enter yes or no');
+    prompt('invalidAnswer');
     answer = readline.question().toLowerCase();
   }
 
   if (answer === 'no' || answer === 'n') {
-    prompt('Thank you for playing!');
-    break;
+    return false;
+  } else {
+    return true;
+
+  }
+};
+
+console.clear(); // Clears the console on startup
+
+prompt('welcome');
+
+while (run) {
+
+  while (true) {
+    console.log(playerWinCount, computerWinCount);
+    console.log(`#>> Choose one: ${VALID_CHOICES.join(', ')}`);
+    let choice = readline.question();
+
+    while (!VALID_CHOICES.includes(choice)) {
+      prompt('invalidChoice');
+      choice = readline.question();
+    }
+
+    let randomIndex = Math.floor(Math.random() * VALID_CHOICES.length);
+    let computerChoice = VALID_CHOICES[randomIndex];
+
+    displayWinner(choice, computerChoice);
+
+    if (playerWinCount === 3) {
+      prompt('winGame');
+      break;
+    } else if (computerWinCount === 3) {
+      prompt('loseGame');
+      break;
+    }
+
+  }
+
+  run = getPlayAgain();
+  if (run) {
+    console.clear();
+    playerWinCount = 0;
+    computerWinCount = 0;
   }
 }
