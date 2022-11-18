@@ -22,27 +22,45 @@ const prompt = key => {
 const displayChoices = () => {
   console.log(`#>> Choose one: ${VALID_CHOICES.join(', ')}`);
   prompt('shorthand');
-}
+};
+
+const mapUserInput = choice => {
+
+  if (VALID_CHOICES.includes(choice)) {
+    return choice;
+  }
+
+  switch (choice) {
+    case 'r' : return 'rock';
+    case 'p' : return 'paper';
+    case 'l' : return 'lizard';
+    case 'sc': return 'scissors';
+    case 'sp': return 'spock';
+  }
+};
 
 const getUserChoice = () => {
   displayChoices();
-  let choice = readline.question();
+  let choice = readline.question().toLowerCase();
 
-    while (!VALID_CHOICES.includes(choice)) {
-      console.clear();
-      prompt('invalidChoice');
-      displayChoices();
-      choice = readline.question();
-    }
-    
-    return choice;
-}
+  choice = mapUserInput(choice);
+
+  while (!VALID_CHOICES.includes(choice)) {
+    console.clear();
+    prompt('invalidChoice');
+    displayChoices();
+    choice = readline.question().toLowerCase();
+    choice = mapUserInput(choice);
+  }
+
+  return choice;
+};
 
 const getComputerChoice = () => {
   let randomIndex = Math.floor(Math.random() * VALID_CHOICES.length);
   let computerChoice = VALID_CHOICES[randomIndex];
   return computerChoice;
-}
+};
 
 const playerWins = (choice, computerChoice) => {
   return WINNING_COMBOS[choice].includes(computerChoice);
@@ -94,16 +112,14 @@ prompt('welcome');
 while (run) {
 
   while (true) {
-    
+
     // Displays score only after the first win;
     if (playerWinCount !== 0 || computerWinCount !== 0) {
       console.log(`#>> The sccore is: User - ${playerWinCount} to Computer - ${computerWinCount}`);
     }
-    
+
     let choice = getUserChoice();
     let computerChoice = getComputerChoice();
-    
-
     displayWinner(choice, computerChoice);
 
     if (playerWinCount === 3) {
