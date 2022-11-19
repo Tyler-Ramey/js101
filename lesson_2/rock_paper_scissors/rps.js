@@ -114,9 +114,9 @@ console.clear(); // Clears the console on startup
 
 prompt('welcome');
 
-while (run) {
+while (run) { // Outer loop for playing again
 
-  while (true) {
+  while (true) { // Inner loop for each round
 
     // Displays score only after the first win;
     if (playerWinCount !== 0 || computerWinCount !== 0) {
