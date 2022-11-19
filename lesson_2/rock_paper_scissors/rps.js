@@ -11,6 +11,14 @@ const WINNING_COMBOS = {
   spock:    ['rock',     'scissors'],
 };
 
+const SHORTHAND = {
+  r: 'rock',
+  p: 'paper',
+  l: 'lizard',
+  sc:'scissors',
+  sp:'spock',
+};
+
 let playerWinCount = 0;
 let computerWinCount = 0;
 let run = true;
@@ -25,26 +33,15 @@ const displayChoices = () => {
 };
 
 const mapUserInput = choice => {
-
   if (VALID_CHOICES.includes(choice)) {
     return choice;
   }
 
-  switch (choice) {
-    case 'r' : return 'rock';
-    case 'p' : return 'paper';
-    case 'l' : return 'lizard';
-    case 'sc': return 'scissors';
-    case 'sp': return 'spock';
-  }
+  choice = SHORTHAND[choice];
+  return choice;
 };
 
-const getUserChoice = () => {
-  displayChoices();
-  let choice = readline.question().toLowerCase();
-
-  choice = mapUserInput(choice);
-
+const validateUserInput = choice => {
   while (!VALID_CHOICES.includes(choice)) {
     console.clear();
     prompt('invalidChoice');
@@ -53,6 +50,14 @@ const getUserChoice = () => {
     choice = mapUserInput(choice);
   }
 
+  return choice;
+};
+
+const getUserChoice = () => {
+  displayChoices();
+  let choice = readline.question().toLowerCase();
+  choice = mapUserInput(choice);
+  choice = validateUserInput(choice);
   return choice;
 };
 
@@ -115,7 +120,7 @@ while (run) {
 
     // Displays score only after the first win;
     if (playerWinCount !== 0 || computerWinCount !== 0) {
-      console.log(`#>> The sccore is: User - ${playerWinCount} to Computer - ${computerWinCount}`);
+      console.log(`#>> The score is: User - ${playerWinCount} to Computer - ${computerWinCount}\n`);
     }
 
     let choice = getUserChoice();
