@@ -3,6 +3,7 @@ const rlsync = require("readline-sync");
 const INITIAL_MARKER = ' ';
 const HUMAN_MARKER = 'X';
 const COMPUTER_MARKER = 'O';
+const WINS_NEEDED = 5;
 
 const prompt = msg => {
   console.log(`>>> ${msg}`);
@@ -18,10 +19,12 @@ const initializeBoard = () =>{
   return board;
 }
 
-const displayBoard= board => {
+const displayBoard= (board, playerWins, computerWins) => {
   console.clear();
 
   console.log(`You are ${HUMAN_MARKER}. Computer is ${COMPUTER_MARKER}`);
+  console.log(`Player wins: ${playerWins}`);
+  console.log(`Computer wins: ${computerWins}`)
 
   console.log('');
   console.log('     |     |');
@@ -110,27 +113,39 @@ const computerChoosesSquare = board => {
   board[square] = COMPUTER_MARKER;
 }
 
-while (true) {
+while (true) { // Outer Loop
   let board = initializeBoard();
+  let playerWins = 0;
+  let computerWins = 0;
 
-  while (true) {
-    displayBoard(board);
+  while (true) { // Match Loop
+    
+    while (true) { // Game Loop
+      displayBoard(board, playerWins, computerWins);
 
-    playerChoosesSquare(board);
-    if (someoneWon(board) || boardFull(board)) break;
+      playerChoosesSquare(board);
+      if (someoneWon(board) || boardFull(board)) break;
+  
+      computerChoosesSquare(board);
+      if (someoneWon(board) || boardFull(board)) break;
+    }
 
-    computerChoosesSquare(board);
-    if (someoneWon(board) || boardFull(board)) break;
-  }
-
-  displayBoard(board);
+  displayBoard(board, playerWins, computerWins);
 
   if (someoneWon(board)) {
     prompt(`${detectWinner(board)} won!`);
   } else {
     prompt("It's a tie!");
   }
-
+  
+  if (detectWinner(board) === 'Player') playerWins += 1;
+  if (detectWinner(board) === 'Computer') computerWins += 1;
+  
+  if (playerWins === 5 || computerWins === 5) break;
+  
+  board = initializeBoard();  
+  }
+  
   prompt(`Play again? (y or n)`);
   let answer = rlsync.question().toLowerCase()[0];
   if (answer !== 'y') break;
