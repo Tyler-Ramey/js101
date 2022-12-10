@@ -77,11 +77,22 @@ const emptySquares = board => {
   return Object.keys(board).filter(key => board[key] === INITIAL_MARKER);
 }
 
+const joinOr = (board, delimiter = ',', joinWord = 'or' ) => {
+  if (board.length === 0) return '';
+  else if (board.length === 1) return `${board[0]}`;
+  else if (board.length === 2) return `${board[0]} ${joinWord} ${board[1]}`;
+  
+  let allButLast = board.slice(0, board.length - 1);
+  let lastNum = board[board.length -1];
+  
+  return `${allButLast.join(delimiter)} ${joinWord} ${lastNum}`;
+}
+
 const playerChoosesSquare = board => {
   let square;
 
   while (true) {
-    prompt(`Choose a square (${emptySquares(board).join(', ')}):`);
+    prompt(`Choose a square: ${joinOr(emptySquares(board))}`);
     square = rlsync.question().trim();
 
     if (emptySquares(board).includes(square)) break; // Break on valid choice
