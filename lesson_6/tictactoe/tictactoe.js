@@ -4,11 +4,11 @@ const INITIAL_MARKER = ' ';
 const HUMAN_MARKER = 'X';
 const COMPUTER_MARKER = 'O';
 
-function prompt(msg) {
+const prompt = msg => {
   console.log(`>>> ${msg}`);
 }
 
-function initializeBoard() {
+const initializeBoard = () =>{
   let board = {};
 
   for (let square = 1; square <= 9; square += 1) {
@@ -18,7 +18,7 @@ function initializeBoard() {
   return board;
 }
 
-function displayBoard(board) {
+const displayBoard= board => {
   console.clear();
 
   console.log(`You are ${HUMAN_MARKER}. Computer is ${COMPUTER_MARKER}`);
@@ -38,10 +38,10 @@ function displayBoard(board) {
   console.log('');
 }
 
-function boardFull(board) {
+const boardFull = board => {
   return emptySquares(board).length === 0;
 }
-function detectWinner(board) {
+const detectWinner = board => {
   let winningLines = [
     [1, 2, 3], [4, 5, 6], [7, 8, 9], // rows
     [1, 4, 7], [2, 5, 8], [3, 6, 9], // columns
@@ -69,15 +69,15 @@ function detectWinner(board) {
   return null;
 }
 
-function someoneWon(board) {
+const someoneWon = board => {
   return !!detectWinner(board);
 }
 
-function emptySquares(board) {
+const emptySquares = board => {
   return Object.keys(board).filter(key => board[key] === INITIAL_MARKER);
 }
 
-function playerChoosesSquare(board) {
+const playerChoosesSquare = board => {
   let square;
 
   while (true) {
@@ -92,7 +92,7 @@ function playerChoosesSquare(board) {
   board[square] = HUMAN_MARKER;
 }
 
-function computerChoosesSquare(board) {
+const computerChoosesSquare = board => {
   let randomIndex = Math.floor(Math.random() * emptySquares(board).length);
 
   let square = emptySquares(board)[randomIndex];
