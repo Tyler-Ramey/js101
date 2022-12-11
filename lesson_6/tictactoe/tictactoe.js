@@ -7,7 +7,7 @@ const WINS_NEEDED = 5;
 
 const prompt = msg => {
   console.log(`>>> ${msg}`);
-}
+};
 
 const initializeBoard = () =>{
   let board = {};
@@ -17,7 +17,7 @@ const initializeBoard = () =>{
   }
 
   return board;
-}
+};
 
 const displayBoard= (board, playerWins, computerWins) => {
   console.clear();
@@ -39,11 +39,12 @@ const displayBoard= (board, playerWins, computerWins) => {
   console.log(`  ${board['7']}  |  ${board['8']}  |  ${board['9']}`);
   console.log('     |     |');
   console.log('');
-}
+};
 
 const boardFull = board => {
   return emptySquares(board).length === 0;
-}
+};
+
 const detectWinner = board => {
   let winningLines = [
     [1, 2, 3], [4, 5, 6], [7, 8, 9], // rows
@@ -70,15 +71,15 @@ const detectWinner = board => {
   }
 
   return null;
-}
+};
 
 const someoneWon = board => {
   return !!detectWinner(board);
-}
+};
 
 const emptySquares = board => {
   return Object.keys(board).filter(key => board[key] === INITIAL_MARKER);
-}
+};
 
 const joinOr = (board, delimiter = ',', joinWord = 'or' ) => {
   if (board.length === 0) return '';
@@ -89,7 +90,7 @@ const joinOr = (board, delimiter = ',', joinWord = 'or' ) => {
   let lastNum = board[board.length -1];
   
   return `${allButLast.join(delimiter)} ${joinWord} ${lastNum}`;
-}
+};
 
 const playerChoosesSquare = board => {
   let square;
@@ -104,17 +105,32 @@ const playerChoosesSquare = board => {
   }
 
   board[square] = HUMAN_MARKER;
-}
+};
 
 const computerChoosesSquare = board => {
   let randomIndex = Math.floor(Math.random() * emptySquares(board).length);
 
   let square = emptySquares(board)[randomIndex];
   board[square] = COMPUTER_MARKER;
-}
+};
+
+const chooseSquare = (board, currentPlayer) => {
+  switch (currentPlayer) {
+    case 'Player': return playerChoosesSquare(board);
+    case 'Computer': return computerChoosesSquare(board);
+  }
+};
+
+const alternatePlayer = currentPlayer => {
+  switch (currentPlayer) {
+    case 'Player': return 'Computer';
+    case 'Computer': return 'Player';
+  }
+};
 
 while (true) { // Outer Loop
   let board = initializeBoard();
+  let currentPlayer = 'Player';
   let playerWins = 0;
   let computerWins = 0;
 
@@ -122,11 +138,8 @@ while (true) { // Outer Loop
     
     while (true) { // Game Loop
       displayBoard(board, playerWins, computerWins);
-
-      playerChoosesSquare(board);
-      if (someoneWon(board) || boardFull(board)) break;
-  
-      computerChoosesSquare(board);
+      chooseSquare(board, currentPlayer);
+      currentPlayer = alternatePlayer(currentPlayer);
       if (someoneWon(board) || boardFull(board)) break;
     }
 
@@ -143,10 +156,9 @@ while (true) { // Outer Loop
   
   if (playerWins === 5 || computerWins === 5) break;
   
-  board = initializeBoard();  
+  setTimeout( () => board = initializeBoard(), 2000)
+    
   }
-  
-  displayBoard(board, playerWins, computerWins);
   
   prompt(`Play again? (yes or no)`);
   let answer = rlsync.question().toLowerCase();
