@@ -146,9 +146,16 @@ while (true) { // Outer Loop
   board = initializeBoard();  
   }
   
-  prompt(`Play again? (y or n)`);
-  let answer = rlsync.question().toLowerCase()[0];
-  if (answer !== 'y') break;
+  displayBoard(board, playerWins, computerWins);
+  
+  prompt(`Play again? (yes or no)`);
+  let answer = rlsync.question().toLowerCase();
+  while (!['y', 'yes', 'n', 'no'].includes(answer)) {
+    prompt('Please enter yes or no.');
+    answer = rlsync.question().toLowerCase();
+  }
+  
+  if (answer === 'no' || answer === 'n') break;
 }
 
 prompt(`Thanks for playing Tic Tac Toe!`);
