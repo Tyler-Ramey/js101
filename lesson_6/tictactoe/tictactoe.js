@@ -4,6 +4,12 @@ const INITIAL_MARKER = ' ';
 const HUMAN_MARKER = 'X';
 const COMPUTER_MARKER = 'O';
 const WINS_NEEDED = 5;
+const FIRST_PLAYER = 'choose'; // Valid options are 'player', 'computer', 'choose'
+const WINNING_LINES = [
+    [1, 2, 3], [4, 5, 6], [7, 8, 9], // rows
+    [1, 4, 7], [2, 5, 8], [3, 6, 9], // columns
+    [1, 5, 9], [3, 5, 7]             // diagonals
+  ];
 
 const prompt = msg => {
   console.log(`>>> ${msg}`);
@@ -46,14 +52,8 @@ const boardFull = board => {
 };
 
 const detectWinner = board => {
-  let winningLines = [
-    [1, 2, 3], [4, 5, 6], [7, 8, 9], // rows
-    [1, 4, 7], [2, 5, 8], [3, 6, 9], // columns
-    [1, 5, 9], [3, 5, 7]             // diagonals
-  ];
-
-  for (let line = 0; line < winningLines.length; line++) {
-    let [ sq1, sq2, sq3 ] = winningLines[line];
+  for (let line = 0; line < WINNING_LINES.length; line++) {
+    let [ sq1, sq2, sq3 ] = WINNING_LINES[line];
 
     if (
       board[sq1] === HUMAN_MARKER &&
@@ -92,6 +92,20 @@ const joinOr = (board, delimiter = ',', joinWord = 'or' ) => {
   return `${allButLast.join(delimiter)} ${joinWord} ${lastNum}`;
 };
 
+const findAtRiskSquare = (line, board) => {
+  let markersInLine = line.map(key => board[key]);
+  
+  // Checks line to determine if line contains two Human markers and then finds
+  // an empty square, if any
+  if (markersInLine.filter(marker => marker === HUMAN_MARKER).length === 2) {
+    let indexOfEmptySq = markersInLine.indexOf(INITIAL_MARKER); // Returns -1 if not found
+    
+    if (indexOfEmptySq >= 0) return line[indexOfEmptySq]; 
+  }
+  
+  return null;
+};
+
 const playerChoosesSquare = board => {
   let square;
 
@@ -108,9 +122,18 @@ const playerChoosesSquare = board => {
 };
 
 const computerChoosesSquare = board => {
-  let randomIndex = Math.floor(Math.random() * emptySquares(board).length);
-
-  let square = emptySquares(board)[randomIndex];
+  let square;
+   for (let index = 0; index < WINNING_LINES.length; index += 1) {
+     let line = WINNING_LINES[index];
+     square = findAtRiskSquare(line, board);
+     if (square !== null) break;
+   }
+  
+  if (!square) {
+    let randomIndex = Math.floor(Math.random() * emptySquares(board).length);
+    square = emptySquares(board)[randomIndex];
+  }
+  
   board[square] = COMPUTER_MARKER;
 };
 
@@ -128,13 +151,34 @@ const alternatePlayer = currentPlayer => {
   }
 };
 
+const getFirstPlayer = () => {
+  switch (FIRST_PLAYER) {
+    case 'player': return 'Player';
+    case 'computer': return 'Computer';
+  }
+  
+  while (true) {
+    prompt('Would you like to go first? (yes/no)');
+    let response = rlsync.question().toLowerCase();
+  
+    if (response === 'y' || response === 'yes') {
+      return 'Player';
+    } else if (response === 'n' || response === 'no') {
+      return 'Computer';
+    } else {
+      prompt('Invalid response.');
+    }
+  }
+};
+
 while (true) { // Outer Loop
-  let currentPlayer = 'Player';
   let playerWins = 0;
   let computerWins = 0;
 
   while (true) { // Match Loop
     let board = initializeBoard();
+    
+    let currentPlayer = getFirstPlayer();
     
     while (true) { // Game Loop
       displayBoard(board, playerWins, computerWins);
@@ -152,6 +196,7 @@ while (true) { // Outer Loop
     }
     
     rlsync.keyInPause();
+    console.clear();
 
     if (detectWinner(board) === 'Player') playerWins += 1;
     if (detectWinner(board) === 'Computer') computerWins += 1;
