@@ -92,12 +92,12 @@ const joinOr = (board, delimiter = ',', joinWord = 'or' ) => {
   return `${allButLast.join(delimiter)} ${joinWord} ${lastNum}`;
 };
 
-const findAtRiskSquare = (line, board) => {
+const findAtRiskSquare = (line, board, marker) => {
   let markersInLine = line.map(key => board[key]);
   
   // Checks line to determine if line contains two Human markers and then finds
   // an empty square, if any
-  if (markersInLine.filter(marker => marker === HUMAN_MARKER).length === 2) {
+  if (markersInLine.filter(val => val === marker).length === 2) {
     let indexOfEmptySq = markersInLine.indexOf(INITIAL_MARKER); // Returns -1 if not found
     
     if (indexOfEmptySq >= 0) return line[indexOfEmptySq]; 
@@ -125,8 +125,16 @@ const computerChoosesSquare = board => {
   let square;
    for (let index = 0; index < WINNING_LINES.length; index += 1) {
      let line = WINNING_LINES[index];
-     square = findAtRiskSquare(line, board);
+     square = findAtRiskSquare(line, board, COMPUTER_MARKER);
      if (square !== null) break;
+   }
+   
+   if (!square) {
+     for (let index = 0; index < WINNING_LINES.length; index += 1) {
+     let line = WINNING_LINES[index];
+     square = findAtRiskSquare(line, board, HUMAN_MARKER);
+     if (square !== null) break;
+    }
    }
   
   if (!square) {
