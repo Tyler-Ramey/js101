@@ -47,6 +47,34 @@ const displayBoard = (board, playerWins, computerWins) => {
 
 };
 
+const emptySquares = board => {
+  return Object.keys(board).filter(key => board[key] === INITIAL_MARKER);
+};
+
+const getFirstPlayer = () => {
+  switch (FIRST_PLAYER) {
+    case 'player': return 'Player';
+    case 'computer': return 'Computer';
+  }
+
+  while (true) {
+    prompt('goFirst');
+    let response = rlsync.question().toLowerCase();
+
+    if (response === 'y' || response === 'yes') {
+      return 'Player';
+    } else if (response === 'n' || response === 'no') {
+      return 'Computer';
+    } else {
+      prompt('invalidAnswer');
+    }
+  }
+};
+
+const boardFull = board => {
+  return emptySquares(board).length === 0;
+};
+
 const detectWinner = board => {
   for (let line = 0; line < WINNING_LINES.length; line++) {
     let [ sq1, sq2, sq3 ] = WINNING_LINES[line];
@@ -69,18 +97,6 @@ const detectWinner = board => {
   return null;
 };
 
-const someoneWon = board => {
-  return !!detectWinner(board);
-};
-
-const emptySquares = board => {
-  return Object.keys(board).filter(key => board[key] === INITIAL_MARKER);
-};
-
-const boardFull = board => {
-  return emptySquares(board).length === 0;
-};
-
 const joinOr = (board, delimiter = ',', joinWord = 'or' ) => {
   if (board.length === 0) return '';
   else if (board.length === 1) return `${board[0]}`;
@@ -92,18 +108,8 @@ const joinOr = (board, delimiter = ',', joinWord = 'or' ) => {
   return `${allButLast.join(delimiter)} ${joinWord} ${lastNum}`;
 };
 
-const findAtRiskSquare = (line, board, marker) => {
-  let markersInLine = line.map(key => board[key]);
-
-  // Checks line to determine if line contains two Human markers and then finds
-  // an empty square, if any
-  if (markersInLine.filter(val => val === marker).length === 2) {
-    let indexOfEmptySq = markersInLine.indexOf(INITIAL_MARKER); // Returns -1 if not found
-
-    if (indexOfEmptySq >= 0) return line[indexOfEmptySq];
-  }
-
-  return null;
+const someoneWon = board => {
+  return !!detectWinner(board);
 };
 
 const playerChoosesSquare = board => {
@@ -119,6 +125,20 @@ const playerChoosesSquare = board => {
   }
 
   board[square] = HUMAN_MARKER;
+};
+
+const findAtRiskSquare = (line, board, marker) => {
+  let markersInLine = line.map(key => board[key]);
+
+  // Checks line to determine if line contains two Human markers and then finds
+  // an empty square, if any
+  if (markersInLine.filter(val => val === marker).length === 2) {
+    let indexOfEmptySq = markersInLine.indexOf(INITIAL_MARKER); // Returns -1 if not found
+
+    if (indexOfEmptySq >= 0) return line[indexOfEmptySq];
+  }
+
+  return null;
 };
 
 const checkComputerOptions = (board, marker) => {
@@ -175,26 +195,6 @@ const alternatePlayer = currentPlayer => {
   return null;
 };
 
-const getFirstPlayer = () => {
-  switch (FIRST_PLAYER) {
-    case 'player': return 'Player';
-    case 'computer': return 'Computer';
-  }
-
-  while (true) {
-    prompt('goFirst');
-    let response = rlsync.question().toLowerCase();
-
-    if (response === 'y' || response === 'yes') {
-      return 'Player';
-    } else if (response === 'n' || response === 'no') {
-      return 'Computer';
-    } else {
-      prompt('invalidAnswer');
-    }
-  }
-};
-
 const getPlayerContinueChoice = () => {
   prompt('playAgain');
   let answer = rlsync.question().toLowerCase();
@@ -202,7 +202,7 @@ const getPlayerContinueChoice = () => {
     prompt('invalidAnswer');
     answer = rlsync.question().toLowerCase();
   }
-  
+
   return answer;
 };
 
@@ -233,17 +233,17 @@ while (true) { // Outer Loop
     }
     if (detectWinner(board) === 'Player') playerWins += 1;
     if (detectWinner(board) === 'Computer') computerWins += 1;
-    
+
     rlsync.keyInPause();  // Pause on round in until user hits any key
     console.clear();
 
     if (playerWins === WINS_NEEDED || computerWins === WINS_NEEDED) break;
   }
-  
+
   displayBoard(board, playerWins, computerWins);
-  
+
   console.log(`${detectWinner(board)} won the game!`);
-  
+
   let answer = getPlayerContinueChoice();
 
   if (answer === 'no' || answer === 'n') break;
