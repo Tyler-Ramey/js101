@@ -1,0 +1,9 @@
+{
+  "welcome": "Welcome to Tic Tac Toe. First to 5 wins, wins the game!",
+  "goFirst": "Would you like to go first? (yes/no)",
+  "invalidSquare": "Sorry, that is not a valid choice.",
+  "tie": "It's a tie!",
+  "playAgain": "Play again? (yes or no)",
+  "invalidAnswer": "Please enter yes or no.",
+  "exit": "Thanks for playing Tic Tac Toe!" 
+}
