@@ -1,22 +1,7 @@
 const rlsync = require("readline-sync");
 
-const DECK = [
-  ['H', '2'], ['H', '3'], ['H', '4'], ['H', '5'], ['H', '6'],   // Hearts
-  ['H', '7'], ['H', '8'], ['H', '9'], ['H', '10'], ['H', 'Jack'],  // Hearts
-  ['H', 'Queen'], ['H', 'King'], ['H', 'Ace'],                           // Hearts
-
-  ['D', '2'], ['D', '3'], ['D', '4'], ['D', '5'], ['D', '6'],   // Diamonds
-  ['D', '7'], ['D', '8'], ['D', '9'], ['D', '10'], ['D', 'Jack'],  // Diamonds
-  ['D', 'Queen'], ['D', 'King'], ['D', 'Ace'],                           // Diamonds
-
-  ['S', '2'], ['S', '3'], ['S', '4'], ['S', '5'], ['S', '6'],   // Spades
-  ['S', '7'], ['S', '8'], ['S', '9'], ['S', '10'], ['S', 'Jack'],  // Spades
-  ['S', 'Queen'], ['S', 'King'], ['S', 'Ace'],                           // Spades
-
-  ['C', '2'], ['C', '3'], ['C', '4'], ['C', '5'], ['C', '6'],   // Clubs
-  ['C', '7'], ['C', '8'], ['C', '9'], ['C', '10'], ['C', 'Jack'],  // Clubs
-  ['C', 'Queen'], ['C', 'King'], ['C', 'Ace'],                           // Clubs
-];
+const SUITS = ['Hearts', 'Diamonds', 'Spades', 'Clubs'];
+const VALUES = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace'];
 
 const WINNING_NUMBER = 21;
 
@@ -48,24 +33,41 @@ function joinHand (hand) {
   return `${allButLast.join(', ')} and ${lastNum}`;
 }
 
-function shuffle (deckCopy) {
-  for (let idx = deckCopy.length - 1; idx > 0; idx--) {
+function shuffle (deck) {
+  for (let idx = deck.length - 1; idx > 0; idx--) {
     let otherIdx = Math.floor(Math.random() * (idx + 1)); // 0 to idx
-    [deckCopy[idx], deckCopy[otherIdx]] = [deckCopy[otherIdx], deckCopy[idx]]; // swap elements
+    [deck[idx], deck[otherIdx]] = [deck[otherIdx], deck[idx]]; // swap elements
   }
+  
+  return deck;
 }
 
-function deal (deckCopy) {
-  let card = deckCopy.shift();
+function initalizeDeck() {
+  let deck = [];
+
+  for (let suitIndex = 0; suitIndex < SUITS.length; suitIndex++) {
+    let suit = SUITS[suitIndex];
+
+    for (let valueIndex = 0; valueIndex < VALUES.length; valueIndex++) {
+      let value = VALUES[valueIndex];
+      deck.push([suit, value]);
+    }
+  }
+
+  return shuffle(deck);
+}
+
+function deal (deck) {
+  let card = deck.shift();
   return card;
 }
 
-function dealStartingHand (deckCopy) {
+function dealStartingHand (deck) {
   let playerHand = [];
   let dealerHand = [];
 
-  for (let runs = 0; runs < 2; runs++) playerHand.push(deal(deckCopy));
-  for (let runs = 0; runs < 2; runs++) dealerHand.push(deal(deckCopy));
+  for (let runs = 0; runs < 2; runs++) playerHand.push(deal(deck));
+  for (let runs = 0; runs < 2; runs++) dealerHand.push(deal(deck));
 
   return [ playerHand, dealerHand ];
 }
@@ -126,7 +128,7 @@ function findWinner (playerHand, dealerHand) {
   return 'Tie';
 }
 
-function playerTurn (playerHand, dealerHand, deckCopy) {
+function playerTurn (playerHand, dealerHand, deck) {
   let dealerCard = dealerHand[0][1];
 
   while (true) {
@@ -136,7 +138,7 @@ function playerTurn (playerHand, dealerHand, deckCopy) {
     let choice = getUserChoice();
 
     if (choice === 'hit' || choice === 'h') {
-      playerHand.push(deal(deckCopy));
+      playerHand.push(deal(deck));
     }
 
     let busted = checkBusted(total(playerHand));
@@ -153,9 +155,9 @@ function playerTurn (playerHand, dealerHand, deckCopy) {
   return playerHand;
 }
 
-function dealerTurn (dealerHand, deckCopy) {
+function dealerTurn (dealerHand, deck) {
   while (total(dealerHand) < 17) {
-    dealerHand.push(deal(deckCopy));
+    dealerHand.push(deal(deck));
   }
   
   return dealerHand;
@@ -164,17 +166,15 @@ function dealerTurn (dealerHand, deckCopy) {
 function game() {
   
   while (true) {
-    let deckCopy = JSON.parse(JSON.stringify(DECK));
+    let deck = initalizeDeck();
+    
+    let [ playerHand, dealerHand ] = dealStartingHand(deck);
   
-    shuffle(deckCopy);
-  
-    let [ playerHand, dealerHand ] = dealStartingHand(deckCopy);
-  
-    playerHand = playerTurn(playerHand, dealerHand, deckCopy);
+    playerHand = playerTurn(playerHand, dealerHand, deck);
     
     //Checks to see if the player busted. If player busted, the dealer is skipped
     if (!checkBusted(total(playerHand))) {
-      dealerHand = dealerTurn(dealerHand, deckCopy);
+      dealerHand = dealerTurn(dealerHand, deck);
     }
     
     
