@@ -130,9 +130,10 @@ const playerChoosesSquare = board => {
 const findAtRiskSquare = (line, board, marker) => {
   let markersInLine = line.map(key => board[key]);
 
-  // Checks line to determine if line contains two Human markers and then finds
+  // Checks line to determine if line contains two of checked markers and then finds
   // an empty square, if any
-  if (markersInLine.filter(val => val === marker).length === 2) {
+  let numberOfMarkers = markersInLine.filter(val => val === marker);
+  if (numberOfMarkers.length === 2) {
     let indexOfEmptySq = markersInLine.indexOf(INITIAL_MARKER); // Returns -1 if not found
 
     if (indexOfEmptySq >= 0) return line[indexOfEmptySq];
@@ -206,13 +207,7 @@ const getPlayerContinueChoice = () => {
   return answer;
 };
 
-prompt('welcome');
-
-while (true) { // Outer Loop
-  let board;
-  let playerWins = 0;
-  let computerWins = 0;
-
+const matchLoop = (board, playerWins, computerWins) => {
   while (true) { // Match Loop
     board = initializeBoard();
     let currentPlayer = getFirstPlayer();
@@ -237,8 +232,20 @@ while (true) { // Outer Loop
     rlsync.keyInPause();  // Pause on round in until user hits any key
     console.clear();
 
-    if (playerWins === WINS_NEEDED || computerWins === WINS_NEEDED) break;
-  }
+    if (playerWins === WINS_NEEDED || computerWins === WINS_NEEDED) {
+      return [ board, playerWins, computerWins ];
+    }
+  } 
+}
+prompt('welcome');
+
+while (true) { // Outer Loop
+  let board;
+  let playerWins = 0;
+  let computerWins = 0;
+
+  [ board, playerWins, computerWins ] = matchLoop(board, playerWins, computerWins);
+  
 
   displayBoard(board, playerWins, computerWins);
 
