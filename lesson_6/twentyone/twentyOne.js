@@ -2,8 +2,8 @@ const rlsync = require("readline-sync");
 
 const SUITS = ['Hearts', 'Diamonds', 'Spades', 'Clubs'];
 const VALUES = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'Jack', 'Queen', 'King', 'Ace'];
-
 const WINNING_NUMBER = 21;
+const DEALER_STAY_NUMER = 17;
 
 function prompt (msg) {
   console.log(`>>> ${msg}`);
@@ -156,7 +156,7 @@ function playerTurn (playerHand, dealerHand, deck) {
 }
 
 function dealerTurn (dealerHand, deck) {
-  while (total(dealerHand) < 17) {
+  while (total(dealerHand) < DEALER_STAY_NUMER) {
     dealerHand.push(deal(deck));
   }
   
