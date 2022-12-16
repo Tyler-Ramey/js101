@@ -33,10 +33,10 @@ function joinHand (hand) {
   return `${allButLast.join(', ')} and ${lastNum}`;
 }
 
-function showHands (playerHand, dealerHand) {
+function showHands (playerHand, dealerHand, total) {
   let dealerCard = dealerHand[0][1];
   prompt(`Dealer has: ${dealerCard} and an unknown card.`);
-  prompt(`Player has: ${joinHand(playerHand)}. Total is ${total(playerHand)}`);
+  prompt(`Player has: ${joinHand(playerHand)}. Total is ${total}`);
 }
 
 function shuffle (deck) {
@@ -78,7 +78,7 @@ function dealStartingHand (deck) {
   return [ playerHand, dealerHand ];
 }
 
-function total (cards) {
+function getTotal (cards) {
   // cards = [['H', '3'], ['S', 'Q'], ... ]
   let values = cards.map(card => card[1]);
 
@@ -119,75 +119,77 @@ function checkPlayAgain () {
   return false;
 }
 
-function findWinner (playerHand, dealerHand) {
-  let playerTotal = total(playerHand);
-  let dealerTotal = total(dealerHand);
-
+function findWinner (pTotal, dTotal) {
   // Checking for busts
-  if (checkBusted(playerTotal)) return 'Dealer';
-  if (checkBusted(dealerTotal)) return 'Player';
+  if (checkBusted(pTotal)) return 'Dealer';
+  if (checkBusted(dTotal)) return 'Player';
 
   // Comparing scores
-  if (playerTotal > dealerTotal) return 'Player';
-  if (dealerTotal > playerTotal) return 'Dealer';
+  if (pTotal > dTotal) return 'Player';
+  if (dTotal > pTotal) return 'Dealer';
 
   return 'Tie';
 }
 
-function playerTurn (playerHand, dealerHand, deck) {
-
+function playerTurn (playerHand, dealerHand, playerTotal, deck) {
+  
   while (true) {
-    showHands(playerHand, dealerHand);
+    playerTotal = getTotal(playerHand);
+    showHands(playerHand, dealerHand, playerTotal);
 
     let choice = getUserChoice();
 
     if (choice === 'hit' || choice === 'h') {
       playerHand.push(deal(deck));
+      playerTotal = getTotal(playerHand);
       console.clear();
     }
 
-    let busted = checkBusted(total(playerHand));
+    let busted = checkBusted(playerTotal);
 
     if (choice === 'stay' || choice === 's') {
       prompt(`You chose to stay!`);
       break;
     } else if (busted) {
-      prompt(`You busted! Your total was ${total(playerHand)}`);
+      prompt(`You busted! Your total was ${playerTotal}`);
       break;
     }
   }
 
-  return playerHand;
+  return [ playerHand, playerTotal ];
 }
 
-function dealerTurn (dealerHand, deck) {
-  while (total(dealerHand) < DEALER_STAY_NUMER) {
+function dealerTurn (dealerHand, dTotal, deck) {
+  dTotal = getTotal(dealerHand);
+  while (dTotal < DEALER_STAY_NUMER) {
     dealerHand.push(deal(deck));
+    dTotal = getTotal(dealerHand);
   }
 
-  return dealerHand;
+  return [ dealerHand, dTotal ];
 }
 
 function game() {
+let pTotal, dTotal;
 
   while (true) {
     let deck = initalizeDeck();
 
     let [ playerHand, dealerHand ] = dealStartingHand(deck);
 
-    playerHand = playerTurn(playerHand, dealerHand, deck);
+    [ playerHand, pTotal ] = playerTurn(playerHand, dealerHand, pTotal, deck);
 
     // Checks to see if the player busted.
     // If player busted, the dealer is skipped
-    if (!checkBusted(total(playerHand))) {
-      dealerHand = dealerTurn(dealerHand, deck);
+    if (!checkBusted(pTotal)) {
+      [ dealerHand, dTotal ] = dealerTurn(dealerHand, dTotal, deck);
     }
 
 
-    prompt(`Dealer has: ${joinHand(dealerHand)}. Total is ${total(dealerHand)}`);
-    prompt(`Player has: ${joinHand(playerHand)}. Total is ${total(playerHand)}`);
+    prompt(`Dealer has: ${joinHand(dealerHand)}. Total is ${dTotal}`);
+    prompt(`Player has: ${joinHand(playerHand)}. Total is ${pTotal}`);
 
-    let winner = findWinner(playerHand, dealerHand);
+    let winner = findWinner(pTotal, dTotal);
 
     if (winner === 'Tie') {
       prompt(`This round ended in a tie!`);
