@@ -38,10 +38,17 @@ function joinHand (hand) {
   return `${allButLast.join(', ')} and ${lastNum}`;
 }
 
-function showHands (playerHand, dealerHand, total) {
-  let dealerCard = dealerHand[0][1];
-  prompt(`Dealer has: ${dealerCard} and an unknown card.`);
-  prompt(`Player has: ${joinHand(playerHand)}. Total is ${total}`);
+function showHands (pHand, dHand, maskCard) {
+
+  if (maskCard) {
+    prompt(`Dealer has: ${dHand[0][1]} and an unknown card.`);
+    prompt(`Player has: ${joinHand(pHand)}. Total is ${getTotal(pHand)}`);
+  } else {
+    prompt(`Dealer has: ${joinHand(dHand)}. Total is ${getTotal(dHand)}`);
+    prompt(`Player has: ${joinHand(pHand)}. Total is ${getTotal(pHand)}`);
+
+  }
+
 }
 
 function shuffle (deck) {
@@ -74,13 +81,13 @@ function deal (deck) {
 }
 
 function dealStartingHand (deck) {
-  let playerHand = [];
-  let dealerHand = [];
+  let pHand = [];
+  let dHand = [];
 
-  for (let runs = 0; runs < 2; runs++) playerHand.push(deal(deck));
-  for (let runs = 0; runs < 2; runs++) dealerHand.push(deal(deck));
+  for (let runs = 0; runs < 2; runs++) pHand.push(deal(deck));
+  for (let runs = 0; runs < 2; runs++) dHand.push(deal(deck));
 
-  return [ playerHand, dealerHand ];
+  return [ pHand, dHand ];
 }
 
 function getTotal (cards) {
@@ -136,114 +143,101 @@ function findWinner (playerTotal, dealerTotal) {
   return 'Tie';
 }
 
-function incrementWinner (winner, pWins, dWins) {
-  if (winner === 'Player') pWins += 1;
-  if (winner === 'Dealer') dWins += 1;
-
-  return [ pWins, dWins];
-}
-
-function playerTurn (playerHand, dealerHand, playerTotal, deck) {
-
+function playerTurn (pHand, dHand, playerTotal, deck) {
   while (true) {
-    playerTotal = getTotal(playerHand);
-    showHands(playerHand, dealerHand, playerTotal);
+    playerTotal = getTotal(pHand);
+    showHands(pHand, dHand, true);
 
     let choice = getUserChoice();
 
     if (choice === 'hit' || choice === 'h') {
-      playerHand.push(deal(deck));
-      playerTotal = getTotal(playerHand);
+      pHand.push(deal(deck));
+      playerTotal = getTotal(pHand);
       console.clear();
     }
-
-    let busted = checkBusted(playerTotal);
 
     if (choice === 'stay' || choice === 's') {
       prompt(`You chose to stay!\n`);
       break;
-    } else if (busted) {
+    } else if (playerTotal > WINNING_NUMBER) {
       prompt(`You busted! Your total was ${playerTotal}\n`);
       break;
     }
   }
 
-  return [ playerHand, playerTotal ];
+  return [ pHand, playerTotal ];
 }
 
-function dealerTurn (dealerHand, dealerTotal, deck) {
-  
-  while (getTotal(dealerHand) < DEALER_STAY_NUMER) {
-    dealerHand.push(deal(deck));
+function dealerTurn (dHand, deck) {
+
+  while (getTotal(dHand) < DEALER_STAY_NUMER) {
+    dHand.push(deal(deck));
   }
 
-  return dealerHand;
+  return dHand;
 }
-
-function roundLoop (playerWins, dealerWins) {
+function resetGame () {
+  console.clear();
+  return [ 0, 0 ]; // Sets wins to 0
+}
+function roundLoop () {
   let playerTotal;
-  let dealerTotal;
-  
+
   while (true) {
     let deck = initalizeDeck();
 
-    let [ playerHand, dealerHand ] = dealStartingHand(deck);
+    let [ pHand, dHand ] = dealStartingHand(deck);
 
-    [ playerHand, playerTotal ] = playerTurn(playerHand, dealerHand, playerTotal, deck);
+    [ pHand, playerTotal ] = playerTurn(pHand, dHand, playerTotal, deck);
 
     // Checks to see if the player busted.
     // If player busted, the dealer is skipped
     if (!checkBusted(playerTotal)) {
-      dealerHand = dealerTurn(dealerHand, dealerTotal, deck);
+      dHand = dealerTurn(dHand, deck);
     }
-    
-    dealerTotal = getTotal(dealerHand);
-    
-    prompt(`Dealer has: ${joinHand(dealerHand)}. Total is ${dealerTotal}`);
-    prompt(`Player has: ${joinHand(playerHand)}. Total is ${playerTotal}`);
+
+    let dealerTotal = getTotal(dHand);
+
+    showHands(pHand, dHand, false);
 
     let winner = findWinner(playerTotal, dealerTotal);
-    
+
     if (winner === 'Tie') {
       prompt('That round ended in a tie!\n');
       return winner;
     }
-    
+
     prompt(`The ${winner} won that round!\n`);
-    
+
     return winner;
   }
 }
 
 function game() {
-  
   let playerWins = 0;
   let dealerWins = 0;
-  
+
   while (true) {
     while (playerWins < GAMES_TO_WIN && dealerWins < GAMES_TO_WIN) {
-      let winner = roundLoop(playerWins, dealerWins);
-      
+      let winner = roundLoop();
+
       if (winner === 'Player') playerWins += 1;
       if (winner === 'Dealer') dealerWins += 1;
-      
+
       prompt(`Score\n>>> Player: ${playerWins}\n>>> Dealer: ${dealerWins} `);
-    
+
       rlsync.keyInPause('Press any key besides "Enter" to continue.', {guide:false});
       console.clear();
     }
-    
+
     if (playerWins === GAMES_TO_WIN) prompt(`Great job! You won the game!`);
     if (dealerWins === GAMES_TO_WIN) prompt(`Bummer.. the dealer won the game.`);
-    
+
     let quit = checkPlayAgain();
-    
+
     if (quit) break;
-    else {
-      playerWins = 0;
-      dealerWins = 0;
-      console.clear();
-    }
+
+    [ playerWins, dealerWins ] = resetGame();
   }
 }
 
